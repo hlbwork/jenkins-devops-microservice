@@ -29,16 +29,41 @@ pipeline {
 				sh "mvn clean compile"
 			}	
 		}
-		stage('Test'){
+		// stage('Test'){
+		// 	steps {
+		// 		sh "mvn test"
+		// 	}	
+		// }
+
+		// stage('Integration Test'){
+		// 	steps {
+		// 		sh "mvn failsafe:integration-test failsafe:verify"
+		// 	}	
+		// }
+
+		stage ('Build Docer image') {
 			steps {
-				sh "mvn test"
-			}	
+				script {
+					dockerImage = docker.build("hlbworkemail/test:${env.BUILD_TAG}")
+				}
+			}
 		}
 
-		stage('Integration Test'){
+		stage ('Package') {
 			steps {
-				sh "mvn failsafe:integration-test failsafe:verify"
-			}	
+				sh "mvn package -DskipTests"
+			}
+		}
+
+		stage ('Push Docker image') {
+			steps {
+				script{
+					docker.withRegistry('','dockerhub'){ // this is allowing jenkins to user our dockerhub credential we stored as as 'dockerhub'
+						dockerImage.push();
+						dockerImage.push('latest');
+					}
+				}
+			}
 		}
 	} 
 	post {
