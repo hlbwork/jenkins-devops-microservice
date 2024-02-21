@@ -44,7 +44,7 @@ pipeline {
 		stage ('Build Docer image') {
 			steps {
 				script {
-					dockerImage = docker.build("hlbworkemail/test:${env.BUILD_TAG}")
+					dockerImage = docker.build("in28min/currency-exchange-devops:${env.BUILD_TAG}")
 				}
 			}
 		}
