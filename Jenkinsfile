@@ -11,5 +11,16 @@ pipeline {
 				echo 'Declarative - Test'	
 			}	
 		}
+	} 
+	post {
+		always {
+			echo 'Always'
+		}
+		success {
+			echo 'on Success'
+		}
+		failure {
+			echo 'Boo, broken'
+		}
 	}
 }
